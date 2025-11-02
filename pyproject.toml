@@ -1,0 +1,19 @@
+[project]
+name = "pydantic-users"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Denis Antonov",email = "denant-inside@yandex.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic (>=2.12.3,<3.0.0)",
+    "pytest (>=8.4.2,<9.0.0)",
+    "email-validator (>=2.3.0,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
