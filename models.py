@@ -9,18 +9,20 @@ from pydantic import (
 
 
 class BaseUser(BaseModel):
-    first_name: str = Field(description="Имя пользователя")
-    last_name: str = Field(description="Фамилия пользователя")
+    first_name: str = Field(min_length=1, description="Имя пользователя")
+    last_name: str = Field(min_length=1, description="Фамилия пользователя")
     email: EmailStr = Field(description="E-mail пользователя")
 
     @field_validator("first_name", "last_name", mode="before")
     def capitalize_name(cls, value: str) -> str:
+        if not isinstance(value, str):
+            raise ValueError("Имя и фамилия должны быть строками")
         return value.capitalize() if value else value
 
 
 class User(BaseUser):
     password: str = Field(
-        min_length=8, exclude=True,
+        min_length=8,
         description="""
             Пароль должен содержать минимум 8 символов, 1 цифру и 1 спецсимвол!
         """
@@ -31,9 +33,11 @@ class User(BaseUser):
     )
 
     @field_validator("password", mode="before")
-    def validate_password(cls, value):
+    def validate_password(cls, value: str) -> str:
+        if not isinstance(value, str):
+            raise ValueError("Пароль должен быть строкой")
         has_digit = bool(re.search(r"\d", value))
-        has_special = bool(re.search(r"[^\w\s]", value))
+        has_special = bool(re.search(r"[!@#$%^&*]", value))
         if not (has_digit and has_special):
             raise ValueError(
                 "Пароль должен содержать хотя бы 1 цифру и 1 спецсимвол!"
